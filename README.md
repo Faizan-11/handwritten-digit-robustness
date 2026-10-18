@@ -31,14 +31,13 @@ The MLP was trained for 50 epochs using Adam with a learning rate of 0.001 and b
 
 ## Results
 
-| Model | Test accuracy | Test macro-F1 | Training time |
-|---|---:|---:|---:|
-| Logistic regression | 96.11% | 96.05% | 0.015 s |
-| MLP | 97.22% | 97.19% | 2.002 s |
+| Model | Test accuracy | Test macro-F1 |
+|---|---:|---:|
+| Logistic regression | 96.11% | 96.05% |
+| MLP | 97.22% | 97.19% |
 
 On this split, the MLP correctly classified 350 of 360 test samples, compared with 346 of 360 for logistic regression. This is a difference of four samples and should not be interpreted as proof of general superiority.
 
-The timing values are specific to this run and small dataset; they are not general hardware benchmarks.
 
 
 
@@ -58,12 +57,23 @@ On this test split and under this synthetic corruption, the MLP had higher mean 
 
 The per-run measurements and summary statistics are saved in `results/robustness.json`.
 
+### Visualising the robustness results
+
+The accuracy-versus-noise plot is saved at `results/figures/accuracy_vs_noise.png`.
+
+
+
 ## Reproducibility
 
-Activate the project environment and run:
+Create and activate a Python 3.11 virtual environment, then install the project dependencies:
 
 ```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 python src/experiment.py
+```
 
 The script uses a fixed seed and writes:
 
@@ -72,6 +82,7 @@ The script uses a fixed seed and writes:
 - `results/mlp_confusion_matrix.csv`
 - `results/test_predictions.csv`
 - `results/error_analysis.json`
+- `results/robustness.json`
 
 Dependencies are listed in `requirements.txt`. The complete installed environment is recorded in `requirements-lock.txt`.
 
