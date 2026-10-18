@@ -159,36 +159,63 @@ def main():
 
 
 
-    # Robustness evaluation using the same noise pattern at each severity.
+
+    # Robustness evaluation across independent noise patterns.
+    # Models and test set remain fixed across all repetitions.
+    NOISE_LEVELS = (0.0, 0.05, 0.10, 0.20, 0.30)
+    NOISE_REPEATS = 5
+
     rng = np.random.default_rng(SEED)
-    standard_noise = rng.normal(0.0, 1.0, size=X_test.shape)
-    robustness_results = []
+    robustness_runs = []
 
-    for noise_std in (0.0, 0.05, 0.10, 0.20, 0.30):
-        noise = noise_std * standard_noise
-        X_corrupted = np.clip(
-            X_test + noise, 0.0, 1.0
-        ).astype(np.float32)
+    for repeat in range(NOISE_REPEATS):
+        standard_noise = rng.normal(0.0, 1.0, size=X_test.shape)
 
-        baseline_corrupted_pred = baseline.predict(X_corrupted)
-        mlp_corrupted_pred = predict_mlp(model, X_corrupted, device)
+        for noise_std in NOISE_LEVELS:
+            X_corrupted = np.clip(
+                X_test + noise_std * standard_noise, 0.0, 1.0
+            ).astype(np.float32)
 
-        robustness_results.append({
-            "noise_std": noise_std,
-            "baseline": classification_metrics(
-                y_test, baseline_corrupted_pred
-            ),
-            "mlp": classification_metrics(
-                y_test, mlp_corrupted_pred
-            ),
-        })
+            baseline_pred = baseline.predict(X_corrupted)
+            mlp_pred = predict_mlp(model, X_corrupted, device)
+
+            robustness_runs.append({
+                "repeat": repeat + 1,
+                "noise_std": noise_std,
+                "baseline": classification_metrics(y_test, baseline_pred),
+                "mlp": classification_metrics(y_test, mlp_pred),
+            })
+
+    # Summarise variability across the five independent noise patterns.
+    robustness_summary = []
+
+    for noise_std in NOISE_LEVELS:
+        matching_runs = [
+            row for row in robustness_runs
+            if row["noise_std"] == noise_std
+        ]
+
+        summary = {"noise_std": noise_std}
+
+        for model_name in ("baseline", "mlp"):
+            for metric in ("accuracy", "macro_f1"):
+                values = np.array([
+                    row[model_name][metric] for row in matching_runs
+                ])
+                summary[f"{model_name}_{metric}_mean"] = float(values.mean())
+                summary[f"{model_name}_{metric}_std"] = float(
+                    values.std(ddof=1)
+                )
+
+        robustness_summary.append(summary)
 
     with (RESULTS_DIR / "robustness.json").open("w") as f:
-        json.dump(robustness_results, f, indent=2)
-
-
-    with (RESULTS_DIR / "robustness.json").open("w") as f:
-        json.dump(robustness_results, f, indent=2)
+        json.dump({
+            "noise_repeats": NOISE_REPEATS,
+            "noise_levels": list(NOISE_LEVELS),
+            "summary": robustness_summary,
+            "runs": robustness_runs,
+        }, f, indent=2)
 
 
     results = {
@@ -221,6 +248,8 @@ def main():
 
     with (RESULTS_DIR / "metrics.json").open("w") as f:
         json.dump(results, f, indent=2)
+
+
 
     # Save per-image predictions so error analysis matches this exact run.
     predictions = np.column_stack(

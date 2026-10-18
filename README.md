@@ -44,28 +44,19 @@ The timing values are specific to this run and small dataset; they are not gener
 
 ## Robustness experiment
 
-The trained models were evaluated on the same held-out test set after adding
-Gaussian noise to the normalised pixel values. Noise standard deviations
-were 0.00, 0.05, 0.10, 0.20, and 0.30. The same standard-normal noise array
-was scaled to produce each severity level, and corrupted pixels were clipped
-to [0, 1].
+The trained models were evaluated on the same held-out test set after adding Gaussian noise to normalised pixel values. Noise standard deviations were 0.00, 0.05, 0.10, 0.20, and 0.30. At each repetition, the same standard-normal noise array was scaled across the severity levels and pixel values were clipped to [0, 1]. Five independent noise patterns were evaluated; the trained models and test set remained fixed.
 
-| Noise standard deviation | Logistic regression accuracy | MLP accuracy |
+| Noise standard deviation | Logistic regression accuracy (mean ± SD) | MLP accuracy (mean ± SD) |
 |---:|---:|---:|
-| 0.00 | 96.11% | 97.22% |
-| 0.05 | 93.33% | 95.83% |
-| 0.10 | 85.00% | 94.17% |
-| 0.20 | 66.67% | 91.67% |
-| 0.30 | 42.50% | 85.83% |
+| 0.00 | 96.11% ± 0.00 pp | 97.22% ± 0.00 pp |
+| 0.05 | 93.78% ± 0.75 pp | 96.50% ± 0.58 pp |
+| 0.10 | 84.94% ± 0.30 pp | 95.33% ± 0.84 pp |
+| 0.20 | 61.83% ± 2.87 pp | 92.00% ± 1.07 pp |
+| 0.30 | 41.44% ± 1.34 pp | 84.22% ± 1.68 pp |
 
-On this split and noise pattern, the MLP retained higher accuracy at every
-tested severity. This is a preliminary observation, not evidence of general
-robustness: only one trained model and one underlying noise pattern were
-evaluated. The results do not establish performance on other datasets or
-real-world image corruptions.
+On this test split and under this synthetic corruption, the MLP had higher mean accuracy at every tested noise level. These repetitions measure variation across noise patterns, not across independently trained models or datasets. They do not establish general robustness or performance on real-world image corruptions.
 
-The robustness measurements are saved in `results/robustness.json`.
-
+The per-run measurements and summary statistics are saved in `results/robustness.json`.
 
 ## Reproducibility
 

@@ -26,7 +26,7 @@
       "accuracy": 0.9611111111111111,
       "macro_f1": 0.9604970063050997
     },
-    "training_seconds": 0.015502291000302648
+    "training_seconds": 0.010357459001170355
   },
   "mlp": {
     "validation": {
@@ -37,6 +37,6 @@
       "accuracy": 0.9722222222222222,
       "macro_f1": 0.9718901036873355
     },
-    "training_seconds": 2.016882665999219
+    "training_seconds": 2.138733208999838
   }
 }
