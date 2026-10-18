@@ -1,0 +1,9 @@
+{
+  "test_samples": 360,
+  "baseline_errors": 14,
+  "mlp_errors": 10,
+  "both_wrong": 6,
+  "baseline_only_wrong": 8,
+  "mlp_only_wrong": 4,
+  "predictions_disagree": 12
+}

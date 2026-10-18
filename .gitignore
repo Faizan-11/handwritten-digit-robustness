@@ -1,0 +1,22 @@
+# Python environment
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Experiment outputs and downloaded datasets
+data/
+outputs/
+checkpoints/
+*.pth
+*.pt
+
+# Local configuration
+.env
+.DS_Store
+
+# Python cache directories
+__pycache__/

@@ -1,0 +1,42 @@
+{
+  "dataset": "scikit-learn digits",
+  "samples": 1797,
+  "image_dimensions": [
+    8,
+    8
+  ],
+  "split_sizes": {
+    "train": 1149,
+    "validation": 288,
+    "test": 360
+  },
+  "seed": 42,
+  "device": "mps",
+  "settings": {
+    "epochs": 50,
+    "batch_size": 64,
+    "learning_rate": 0.001
+  },
+  "baseline": {
+    "validation": {
+      "accuracy": 0.9756944444444444,
+      "macro_f1": 0.9758918521613922
+    },
+    "test": {
+      "accuracy": 0.9611111111111111,
+      "macro_f1": 0.9604970063050997
+    },
+    "training_seconds": 0.01547329200002423
+  },
+  "mlp": {
+    "validation": {
+      "accuracy": 0.9826388888888888,
+      "macro_f1": 0.9829632278680991
+    },
+    "test": {
+      "accuracy": 0.9722222222222222,
+      "macro_f1": 0.9718901036873355
+    },
+    "training_seconds": 2.0019995420007035
+  }
+}
