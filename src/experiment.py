@@ -157,6 +157,40 @@ def main():
     baseline_test_pred = baseline.predict(X_test)
     mlp_test_pred = predict_mlp(model, X_test, device)
 
+
+
+    # Robustness evaluation using the same noise pattern at each severity.
+    rng = np.random.default_rng(SEED)
+    standard_noise = rng.normal(0.0, 1.0, size=X_test.shape)
+    robustness_results = []
+
+    for noise_std in (0.0, 0.05, 0.10, 0.20, 0.30):
+        noise = noise_std * standard_noise
+        X_corrupted = np.clip(
+            X_test + noise, 0.0, 1.0
+        ).astype(np.float32)
+
+        baseline_corrupted_pred = baseline.predict(X_corrupted)
+        mlp_corrupted_pred = predict_mlp(model, X_corrupted, device)
+
+        robustness_results.append({
+            "noise_std": noise_std,
+            "baseline": classification_metrics(
+                y_test, baseline_corrupted_pred
+            ),
+            "mlp": classification_metrics(
+                y_test, mlp_corrupted_pred
+            ),
+        })
+
+    with (RESULTS_DIR / "robustness.json").open("w") as f:
+        json.dump(robustness_results, f, indent=2)
+
+
+    with (RESULTS_DIR / "robustness.json").open("w") as f:
+        json.dump(robustness_results, f, indent=2)
+
+
     results = {
         "dataset": "scikit-learn digits",
         "samples": 1797,
@@ -187,7 +221,7 @@ def main():
 
     with (RESULTS_DIR / "metrics.json").open("w") as f:
         json.dump(results, f, indent=2)
-    
+
     # Save per-image predictions so error analysis matches this exact run.
     predictions = np.column_stack(
         [

@@ -40,6 +40,33 @@ On this split, the MLP correctly classified 350 of 360 test samples, compared wi
 
 The timing values are specific to this run and small dataset; they are not general hardware benchmarks.
 
+
+
+## Robustness experiment
+
+The trained models were evaluated on the same held-out test set after adding
+Gaussian noise to the normalised pixel values. Noise standard deviations
+were 0.00, 0.05, 0.10, 0.20, and 0.30. The same standard-normal noise array
+was scaled to produce each severity level, and corrupted pixels were clipped
+to [0, 1].
+
+| Noise standard deviation | Logistic regression accuracy | MLP accuracy |
+|---:|---:|---:|
+| 0.00 | 96.11% | 97.22% |
+| 0.05 | 93.33% | 95.83% |
+| 0.10 | 85.00% | 94.17% |
+| 0.20 | 66.67% | 91.67% |
+| 0.30 | 42.50% | 85.83% |
+
+On this split and noise pattern, the MLP retained higher accuracy at every
+tested severity. This is a preliminary observation, not evidence of general
+robustness: only one trained model and one underlying noise pattern were
+evaluated. The results do not establish performance on other datasets or
+real-world image corruptions.
+
+The robustness measurements are saved in `results/robustness.json`.
+
+
 ## Reproducibility
 
 Activate the project environment and run:
